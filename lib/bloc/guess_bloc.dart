@@ -23,12 +23,14 @@ class GuessState {
   final int attemptsLeft; // Оставшиеся попытки
   final bool isGameOver; // Флаг окончания игры
   final bool isWin; // Флаг победы
+  final String hintMessage; // Подсказка
 
   GuessState({
     required this.targetNumber,
     required this.attemptsLeft,
     required this.isGameOver,
     required this.isWin,
+    this.hintMessage = '', // По умолчанию подсказка пуста
   });
 
   // Копирует текущее состояние с новыми значениями
@@ -37,12 +39,14 @@ class GuessState {
     int? attemptsLeft,
     bool? isGameOver,
     bool? isWin,
+    String? hintMessage,
   }) {
     return GuessState(
       targetNumber: targetNumber ?? this.targetNumber,
       attemptsLeft: attemptsLeft ?? this.attemptsLeft,
       isGameOver: isGameOver ?? this.isGameOver,
       isWin: isWin ?? this.isWin,
+      hintMessage: hintMessage ?? this.hintMessage,
     );
   }
 }
@@ -66,10 +70,21 @@ class GuessBloc extends Bloc<GuessEvent, GuessState> {
       final isCorrect = event.guessedNumber == state.targetNumber;
       final isLastAttempt = state.attemptsLeft == 1;
 
+      // Формируем подсказку
+      String hintMessage = '';
+      if (!isCorrect && !isLastAttempt) {
+        if (event.guessedNumber < state.targetNumber) {
+          hintMessage = 'Загаданное число больше!';
+        } else {
+          hintMessage = 'Загаданное число меньше!';
+        }
+      }
+
       emit(state.copyWith(
         attemptsLeft: state.attemptsLeft - 1,
         isGameOver: isCorrect || isLastAttempt,
         isWin: isCorrect,
+        hintMessage: hintMessage,
       ));
     });
   }

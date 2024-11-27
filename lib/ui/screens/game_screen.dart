@@ -55,8 +55,17 @@ class _GameScreenState extends State<GameScreen> {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Выравнивание элементов по левому краю
               children: [
-                Text('Оставшиеся попытки: ${state.attemptsLeft}'),
+                Text('Оставшиеся попытки: ${state.attemptsLeft}',
+                      style: const TextStyle(fontSize: 18),),
+                const SizedBox(height: 10),
+                if (state.hintMessage.isNotEmpty) // Проверяем, есть ли подсказка
+                  Text(
+                    state.hintMessage, // Текст подсказки (меньше или больше)
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                const SizedBox(height: 20),
                 TextField(
                   controller: _guessController,
                   keyboardType: TextInputType.number,
